@@ -18,6 +18,45 @@
     value="16"
     min="4"
     max="64" /> 
-    <button>Copiar senha</button>
+    
+    <button id="copy">Copiar senha</button>
+    
+    <script>
+        const inputE1 = document.querySelector("#password")
+
+        let passwordLength = 16
+
+        function generatePassword() {
+            // sring semente
+            const chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789?!@&*()[]"
+            // passaword gerado
+            let password = ""
+            // loop para gerar a senha
+            for (let i = 0; i < passwordLength; i++) {
+                // gera um numero aleatorio e multiplica pela quantidade total da string
+                const randomNumber = Math.floor(Math.random() * chars.length)
+                // substring recorta 
+                password += chars.substring(randomNumber, randomNumber + 1)
+            }
+            // recuperar o input
+            inputE1.value = password
+        }
+        function copy(){
+            // copiar e colar
+            navigator.clipboard.writeText(inputE1.value)
+        }
+
+
+        const passwordLengthE1 = document.querySelector("#password-length")
+        passwordLengthE1.addEventListener("input", function(){
+            passwordLength = passwordLengthE1.value
+            generatePassword()
+        })
+
+        const copyButtonE1 = document.querySelector("#copy")
+        copyButtonE1.addEventListener("click", copy)
+
+        generatePassword()
+    </script>
 </body>
 </html>
