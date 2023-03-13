@@ -42,8 +42,7 @@
         <div class="security-indicator">
           <div 
             id="security-indicator-bar" 
-            class="bar safe" 
-            style="width: 90%;"
+            class="bar" 
             ></div>
         </div>
       </section>
@@ -52,7 +51,7 @@
         <h3 class="title">Personalizar</h3>
         <div class="actions">
           <div class="password-length">           
-            <p>Tamanho: <span class="passwprd-legth-text">16</span></p>
+            <p>Tamanho: <span id="passwprd-length-text">16</span></p>
             <input
               type="range"
               name="password-length"
@@ -76,7 +75,7 @@
             </label>
             <label class="checkbox-container">
               <span class="text">Símbolos</span>
-              <input type="checkbox" id="symol-check" checked>
+              <input type="checkbox" id="symbol-check" checked>
               <span class="checkmark"></span>
             </label>
           </div>
@@ -90,13 +89,31 @@
 
     <script>
       const inputE1 = document.querySelector("#password");
+      const upperCaseCheckE1 = document.querySelector("#uppercase-check")
+      const numberCheckE1 = document.querySelector("#number-check")
+      const symbolCheckE1 = document.querySelector("#symbol-check")
+      const securityIndicatorBarE1 = document.querySelector("#security-indicator-bar")
+
 
       let passwordLength = 16;
 
       function generatePassword() {
-        // sring semente
-        const chars =
-          "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789?!@&*()[]";
+        let chars ="abcdefghjkmnpqrstuvwxyz"
+        const upperCaseChars = "ABCDEFGHJKLMNPQRSTUVWXYZ"
+        const numberChars="123456789"
+        const symbolChars ="!@&*()[]"
+        
+        if(upperCaseCheckE1.checked){
+          chars += upperCaseChars
+        }
+
+        if(numberCheckE1.checked){ 
+          chars += numberChars
+        }
+
+        if(symbolCheckE1.checked){
+          chars += symbolChars
+        }
         // passaword gerado
         let password = "";
         // loop para gerar a senha
@@ -108,20 +125,55 @@
         }
         // recuperar o input
         inputE1.value = password;
+        calculateQuality()
       }
+
+      function calculateQuality(){
+        const percent =Math.round((passwordLength / 64) * 25 + 
+          (upperCaseCheckE1.checked ? 15 : 0)+ 
+          (numberCheckE1.checked ? 25 : 0) +
+          (symbolCheckE1.checked ? 35 : 0)
+          )
+        securityIndicatorBarE1.style.width = `${percent}%`
+        if(percent > 69){
+          securityIndicatorBarE1.classList.remove("critical")
+          securityIndicatorBarE1.classList.remove("warning")
+          securityIndicatorBarE1.classList.add("safe")
+
+        }else if(percent > 50){
+          securityIndicatorBarE1.classList.remove("critical")
+          securityIndicatorBarE1.classList.add("warning")
+          securityIndicatorBarE1.classList.remove("safe")
+        }else{
+          securityIndicatorBarE1.classList.add("critical")
+          securityIndicatorBarE1.classList.remove("warning")
+          securityIndicatorBarE1.classList.remove("safe")
+        }
+        if(percent >= 100){
+          securityIndicatorBarE1.classList.add("completed")
+        }else {
+          securityIndicatorBarE1.classList.remove("completed")
+        }
+      }
+
       function copy() {
         // copiar e colar
         navigator.clipboard.writeText(inputE1.value);
       }
       const passwordLengthE1 = document.querySelector("#password-length");
       passwordLengthE1.addEventListener("input", function () {
-        passwordLength = passwordLengthE1.value;
+        passwordLength = passwordLengthE1.value
+        document.querySelector("#passwprd-length-text").innerText = passwordLength
         generatePassword();
       });
+      upperCaseCheckE1.addEventListener("click", generatePassword)
+      numberCheckE1.addEventListener("click", generatePassword)
+      symbolCheckE1.addEventListener("click", generatePassword)
+
 
       document.querySelector("#copy-1").addEventListener("click", copy);
       document.querySelector("#copy-2").addEventListener("click", copy);
-
+      
 
       generatePassword();
     </script>

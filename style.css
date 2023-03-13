@@ -81,7 +81,7 @@ main{
 .security-indicator .bar.critical{
     background-color: #eb5757;
 }
-.security-indicator .bar.warnig{
+.security-indicator .bar.warning{
     background-color: #f2c94c;
 }
 .security-indicator .bar.safe{
